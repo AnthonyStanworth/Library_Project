@@ -14,4 +14,12 @@ MVP Proposal for the architecture:
 
 ![Image](POC_architecture.drawio.png)
 
-TEST STUFF
+# Building the python application
+
+The initial python app will be uploaded as a jupyter notebook to document the experimentation process and then converted into a .py script to be deployed.
+
+Steps that will be needed:
+- Get rid of rows with NaN values
+- Change ID colmns to Int datatype
+- Clean date columns and convert to datetime
+- Deal with invalid dates
