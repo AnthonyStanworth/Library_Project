@@ -99,7 +99,7 @@ def writeToSQL(df, table_name, server, database):
 if __name__ == '__main__':
     print('**************** Starting Clean ****************')
     
-    
+    # Clean book file
     filepath_input = '../data/03_Library Systembook.csv'
     id_columns = ['Id', 'Customer ID']
     date_columns = ['Book checkout', 'Book Returned']
@@ -115,7 +115,7 @@ if __name__ == '__main__':
     data, errors = enrichDates(data, date1='Book checkout', date2='Book Returned', errors_df=errors)
 
     print(data)
-
+    print(f"{len(errors)} records were removed from the data")
     #Cleaning the customer file
     filepath_input_2 = '../data/03_Library SystemCustomers.csv'
 
@@ -125,7 +125,7 @@ if __name__ == '__main__':
     data2, errors2 = deNaN_dedupe(data2, errors2)
 
     print(data2)
-
+    print(f"{len(errors2)} records were removed from the data")
     print('**************** DATA CLEANED ****************')
 
     print('Writing to SQL Server...')
