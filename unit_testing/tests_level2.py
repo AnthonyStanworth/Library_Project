@@ -5,7 +5,7 @@ class TestOperations(unittest.TestCase):
     def setUp(self):
         self.calculation = Calculator(8,2)
         
-    def test_sm(self):
+    def test_sum(self):
         self.assertEqual(self.calculation.do_sum(), 10, 'The sum is wrong')
 
     def test_minus(self):
