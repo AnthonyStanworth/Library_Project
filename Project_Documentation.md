@@ -1,5 +1,5 @@
 # Project Overview
-A local library came to us with the task of automating the cleaning of their customer and loans data, followed by storing it in a database for further analysis. The process we took to complete this project involved creating a cleaning app which will take both files, clean  them and upload them to the database. Before deployment the app was tested using unittest. Finally, a PowerBI dashboard was created to display various metrics of the pipeline and the errors that could be fixed.
+A local library came to us with the task of automating the cleaning of their customer and loans data, followed by storing it in a database for further analysis. The process we took to complete this project involved creating a cleaning app which will take both files, cleans and enriches them and uploads them to the database. Before deployment the app was tested using unittest. Finally, a PowerBI dashboard was created to display various metrics of the pipeline and the errors that could be fixed.
 
 # Project Objectives
 
