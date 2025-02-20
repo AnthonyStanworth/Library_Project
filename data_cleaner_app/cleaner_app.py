@@ -6,18 +6,29 @@ import pyodbc
 # Function to load a file into a dataframe
 def fileLoader(filepath):
     data = pd.read_csv(filepath)
-    errors = pd.DataFrame(columns=data.columns)
+    errors = pd.DataFrame(columns=list(data.columns) + ['Error Type', 'Actionable Error'])
     return data, errors
 
 # Function to remove rows with NaNs and duplicated rows and add the erroneous rows to an errors df
 def deNaN_dedupe(df, errors_df):
-    # Move NaN rows to errors_df
-    nan_rows = df[df.isna().any(axis=1)]
-    errors_df = pd.concat([errors_df, nan_rows], ignore_index=True)
-    df.dropna(inplace=True)
+    # Move rows with all NaN values to errors_df
+    all_nans_rows = df[df.isna().all(axis=1)]
+    all_nans_rows['Error Type'] = 'Missing all data' 
+    all_nans_rows['Actionable Error'] = 'No'
+    errors_df = pd.concat([errors_df, all_nans_rows], ignore_index=True)
+    df.dropna(how='all', inplace=True)
+
+    # Move rows with some NaN values to errors_df
+    some_nans_rows = df[df.isna().any(axis=1)]
+    some_nans_rows['Error Type'] = 'Missing some data' 
+    some_nans_rows['Actionable Error'] = 'Yes'
+    errors_df = pd.concat([errors_df, some_nans_rows], ignore_index=True)
+    df.dropna(how='any', inplace=True)
 
     # Move duplicated rows to errors_df
     dupe_rows = df[df.duplicated(keep='first')]
+    dupe_rows['Error Type'] = 'Duplicated'
+    dupe_rows['Actionable Error'] = 'No'
     errors_df = pd.concat([errors_df, dupe_rows], ignore_index=True)
     df.drop_duplicates(inplace=True)
 
@@ -54,6 +65,8 @@ def dateClean(df, dates, errors_df):
         # Check for valid dates and append rows with invalid dates to the errors df
         df['valid date'] = df[i].apply(lambda x: is_valid_date(x))
         invalid_dates = df[df['valid date'] == False].drop('valid date', axis=1)
+        invalid_dates['Error Type'] = 'Invalid date'
+        invalid_dates['Actionable Error'] = 'Yes'
         errors_df = pd.concat([errors_df, invalid_dates], ignore_index=True)
 
         # Only keep rows with valid dates and drop valid date col
@@ -71,7 +84,9 @@ def enrichDates(df, date1, date2, errors_df):
     df['Loan Days'] = (df[date2] - df[date1]).dt.days
 
     df['Valid Loan'] = df['Loan Days'] >= 0
-    invalid_loan = df[df['Valid Loan'] == False].drop('Valid Loan', axis=1)
+    invalid_loan = df[df['Valid Loan'] == False].drop(['Valid Loan','Loan Days'], axis=1)
+    invalid_loan['Error Type'] = 'Invalid loan'
+    invalid_loan['Actionable Error'] = 'Yes'
     errors_df = pd.concat([errors_df, invalid_loan], ignore_index=True)
 
     df = df[df['Valid Loan']].drop('Valid Loan', axis=1)
@@ -115,7 +130,7 @@ if __name__ == '__main__':
     data, errors = enrichDates(data, date1='Book checkout', date2='Book Returned', errors_df=errors)
 
     print(data)
-    print(f"{len(errors)} records were removed from the data")
+    print(f"{len(errors)} records were removed from this dataset")
     #Cleaning the customer file
     filepath_input_2 = '../data/03_Library SystemCustomers.csv'
 
@@ -125,7 +140,7 @@ if __name__ == '__main__':
     data2, errors2 = deNaN_dedupe(data2, errors2)
 
     print(data2)
-    print(f"{len(errors2)} records were removed from the data")
+    print(f"{len(errors2)} records were removed from this dataset")
     print('**************** DATA CLEANED ****************')
 
     print('Writing to SQL Server...')
@@ -138,8 +153,22 @@ if __name__ == '__main__':
     )
 
     writeToSQL(
+        errors, 
+        table_name='loans_errors_bronze', 
+        server = 'localhost', 
+        database = 'LibraryDB'
+    )
+
+    writeToSQL(
         data2, 
         table_name='customer_bronze', 
+        server = 'localhost', 
+        database = 'LibraryDB'
+    )
+
+    writeToSQL(
+        errors2, 
+        table_name='customer_errors_bronze', 
         server = 'localhost', 
         database = 'LibraryDB'
     )

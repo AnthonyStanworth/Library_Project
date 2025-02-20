@@ -19,13 +19,13 @@ MVP Proposal for the architecture:
 The initial python app was uploaded as a jupyter notebook to document the experimentation process and identify the cleaning steps needed.
 
 Steps that will be needed:
-- Get rid of rows with NaN values
-- Get rid of any duplicated rows
-- Change ID columns to Int datatype from float
-- Clean date columns and convert to datetime
-- Deal with invalid dates
-- Enrich date columns - calculating the difference between them
-- Store all removed records in a error dataframe with the type of error they have
+- Get rid of rows with NaN values.
+- Get rid of any duplicated rows.
+- Change ID columns to Int datatype from float.
+- Clean date columns and convert to datetime.
+- Deal with invalid dates.
+- Enrich date columns - calculating the difference between them.
+- Store all removed records in a error dataframe with the type of error they have and whether it is actionable or not.
 
 # Building the python app
 
@@ -50,4 +50,4 @@ A Docker container was built that when spun up will install the necessary python
 
 # Visualisation
 
-A PowerBI dashboard was built to display metrics of from the pipeline and give an overview of the cleaned data and also the errors that need to be rectified.
+A PowerBI dashboard was built to display metrics of from the pipeline and give an overview of the cleaned data and also the errors that need to be rectified. Data is pulled from SSMS.
