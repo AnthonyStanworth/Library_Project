@@ -15,7 +15,7 @@ A local library came to us with the task of automating the cleaning of their cus
 
 MVP Proposal for the architecture:
 
-
+![Image](POC_architecture.drawio.png)
 
 # Python experimentation
 
