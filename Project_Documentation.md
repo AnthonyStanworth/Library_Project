@@ -54,3 +54,5 @@ A Docker container was built that when spun up will install the necessary python
 # Visualisation
 
 A PowerBI dashboard was built to display metrics of from the pipeline and give an overview of the cleaned data and also the errors that need to be rectified. Data is pulled from SSMS.
+
+![Image](/data_cleaner_app/Library_Pipeline_Dashboard_Screenshot.png)
